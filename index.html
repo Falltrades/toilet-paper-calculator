@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toilet Paper Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f2eb;
+      --surface: #fffdf8;
+      --border: #d9d3c4;
+      --text: #1a1814;
+      --muted: #7a7468;
+      --accent: #2d6a4f;
+      --accent-light: #e8f4ef;
+      --blue: #1a4a7a;
+      --blue-light: #e8f0f8;
+      --warn: #7a4a1a;
+      --warn-light: #f8f0e8;
+      --mono: 'DM Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+    }
+
+    header h1 {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-top: 0.35rem;
+    }
+
+    .method-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 7px 16px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover { color: var(--text); border-color: var(--text); }
+    .tab-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    .rolls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 1.5rem;
+    }
+
+    .roll-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .roll-card h3 {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-a { background: var(--accent); }
+    .dot-b { background: var(--blue); }
+
+    .field { margin-bottom: 10px; }
+
+    .field label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-family: var(--mono);
+    }
+
+    .field input {
+      width: 100%;
+      padding: 7px 10px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .field input:focus { border-color: var(--text); }
+
+    .section-fields { display: none; }
+    .section-fields.visible { display: block; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+
+    .results {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .metric {
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 0.875rem;
+    }
+
+    .metric .m-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .metric .m-value {
+      font-family: var(--mono);
+      font-size: 1.3rem;
+      font-weight: 500;
+    }
+
+    .metric .m-sub {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .winner-bar {
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .winner-a { background: var(--accent-light); color: var(--accent); }
+    .winner-b { background: var(--blue-light); color: var(--blue); }
+    .winner-tie { background: var(--warn-light); color: var(--warn); }
+
+    .empty-state {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 1.5rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    @media (max-width: 480px) {
+      .rolls-grid, .results-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🧻 toilet paper calculator</h1>
+    <p>Find out which roll gives you more paper per euro.</p>
+  </header>
+
+  <div class="method-tabs">
+    <button class="tab-btn active" onclick="setMethod('weight', this)">By weight</button>
+    <button class="tab-btn" onclick="setMethod('sheets', this)">By sheet count</button>
+    <button class="tab-btn" onclick="setMethod('diameter', this)">By diameter</button>
+  </div>
+
+  <div class="rolls-grid">
+    <!-- Roll A -->
+    <div class="roll-card">
+      <h3><span class="dot dot-a"></span> Roll A</h3>
+      <div class="field">
+        <label>Price (€)</label>
+        <input type="number" id="a-price" value="1.50" min="0" step="0.01" oninput="calculate()">
+      </div>
+      <div class="field">
+        <label>Rolls in pack</label>
+        <input type="number" id="a-rolls" value="1" min="1" step="1" oninput="calculate()">
+      </div>
+      <div class="divider"></div>
+
+      <div class="section-fields visible" id="weight-a">
+        <div class="field"><label>Total roll weight (g)</label>
+          <input type="number" id="a-total-w" value="120" min="0" oninput="calculate()"></div>
+        <div class="field"><label>Tube weight (g)</label>
+          <input type="number" id="a-tube-w" value="15" min="0" oninput="calculate()"></div>
+      </div>
+
+      <div class="section-fields" id="sheets-a">
+        <div class="field"><label>Sheet count</label>
+          <input type="number" id="a-sheets" value="200" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Sheet length (mm)</label>
+          <input type="number" id="a-sheet-len" value="113" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Sheet width (mm)</label>
+          <input type="number" id="a-sheet-wid" value="100" min="1" oninput="calculate()"></div>
+      </div>
+
+      <div class="section-fields" id="diameter-a">
+        <div class="field"><label>Outer diameter (mm)</label>
+          <input type="number" id="a-outer" value="110" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Tube diameter (mm)</label>
+          <input type="number" id="a-inner" value="40" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Roll width (mm)</label>
+          <input type="number" id="a-width" value="100" min="1" oninput="calculate()"></div>
+      </div>
+    </div>
+
+    <!-- Roll B -->
+    <div class="roll-card">
+      <h3><span class="dot dot-b"></span> Roll B</h3>
+      <div class="field">
+        <label>Price (€)</label>
+        <input type="number" id="b-price" value="2.20" min="0" step="0.01" oninput="calculate()">
+      </div>
+      <div class="field">
+        <label>Rolls in pack</label>
+        <input type="number" id="b-rolls" value="1" min="1" step="1" oninput="calculate()">
+      </div>
+      <div class="divider"></div>
+
+      <div class="section-fields visible" id="weight-b">
+        <div class="field"><label>Total roll weight (g)</label>
+          <input type="number" id="b-total-w" value="185" min="0" oninput="calculate()"></div>
+        <div class="field"><label>Tube weight (g)</label>
+          <input type="number" id="b-tube-w" value="15" min="0" oninput="calculate()"></div>
+      </div>
+
+      <div class="section-fields" id="sheets-b">
+        <div class="field"><label>Sheet count</label>
+          <input type="number" id="b-sheets" value="280" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Sheet length (mm)</label>
+          <input type="number" id="b-sheet-len" value="100" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Sheet width (mm)</label>
+          <input type="number" id="b-sheet-wid" value="100" min="1" oninput="calculate()"></div>
+      </div>
+
+      <div class="section-fields" id="diameter-b">
+        <div class="field"><label>Outer diameter (mm)</label>
+          <input type="number" id="b-outer" value="130" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Tube diameter (mm)</label>
+          <input type="number" id="b-inner" value="40" min="1" oninput="calculate()"></div>
+        <div class="field"><label>Roll width (mm)</label>
+          <input type="number" id="b-width" value="100" min="1" oninput="calculate()"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results">
+    <div id="results-inner"><div class="empty-state">enter values above to compare</div></div>
+  </div>
+
+  <footer>no data is sent anywhere · runs entirely in your browser</footer>
+</div>
+
+<script>
+  let method = 'weight';
+
+  function setMethod(m, btn) {
+    method = m;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['weight','sheets','diameter'].forEach(sec => {
+      ['a','b'].forEach(roll => {
+        const el = document.getElementById(sec + '-' + roll);
+        if (el) el.classList.toggle('visible', sec === m);
+      });
+    });
+    calculate();
+  }
+
+  function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+  function fmt(n) { return n < 0.01 ? n.toFixed(5) : n < 0.1 ? n.toFixed(4) : n.toFixed(3); }
+
+  function calculate() {
+    const aPrice = v('a-price') / Math.max(1, v('a-rolls'));
+    const bPrice = v('b-price') / Math.max(1, v('b-rolls'));
+    let aUnit, bUnit, unitLabel, aDetail, bDetail;
+
+    if (method === 'weight') {
+      const aG = v('a-total-w') - v('a-tube-w');
+      const bG = v('b-total-w') - v('b-tube-w');
+      aUnit = aG > 0 ? aPrice / aG : null;
+      bUnit = bG > 0 ? bPrice / bG : null;
+      unitLabel = '€ / gram of paper';
+      aDetail = aG > 0 ? aG.toFixed(0) + 'g paper' : '—';
+      bDetail = bG > 0 ? bG.toFixed(0) + 'g paper' : '—';
+    } else if (method === 'sheets') {
+      const aA = v('a-sheets') * v('a-sheet-len') * v('a-sheet-wid') / 10000;
+      const bA = v('b-sheets') * v('b-sheet-len') * v('b-sheet-wid') / 10000;
+      aUnit = aA > 0 ? (aPrice / aA) * 100 : null;
+      bUnit = bA > 0 ? (bPrice / bA) * 100 : null;
+      unitLabel = '€ / 100 cm²';
+      aDetail = aA > 0 ? aA.toFixed(0) + ' cm²' : '—';
+      bDetail = bA > 0 ? bA.toFixed(0) + ' cm²' : '—';
+    } else {
+      const aV = Math.PI * ((v('a-outer')/2)**2 - (v('a-inner')/2)**2) * v('a-width') / 1000;
+      const bV = Math.PI * ((v('b-outer')/2)**2 - (v('b-inner')/2)**2) * v('b-width') / 1000;
+      aUnit = aV > 0 ? aPrice / aV : null;
+      bUnit = bV > 0 ? bPrice / bV : null;
+      unitLabel = '€ / cm³ of paper';
+      aDetail = aV > 0 ? aV.toFixed(0) + ' cm³' : '—';
+      bDetail = bV > 0 ? bV.toFixed(0) + ' cm³' : '—';
+    }
+
+    if (!aUnit || !bUnit || isNaN(aUnit) || isNaN(bUnit)) {
+      document.getElementById('results-inner').innerHTML = '<div class="empty-state">enter valid values above to compare</div>';
+      return;
+    }
+
+    const winner = aUnit < bUnit ? 'a' : bUnit < aUnit ? 'b' : 'tie';
+    const savings = (Math.abs(aUnit - bUnit) / Math.max(aUnit, bUnit) * 100).toFixed(1);
+    const winnerText = winner === 'a' ? `Roll A is cheaper by ${savings}%` : winner === 'b' ? `Roll B is cheaper by ${savings}%` : 'Equal value — no difference';
+    const winnerClass = winner === 'a' ? 'winner-a' : winner === 'b' ? 'winner-b' : 'winner-tie';
+
+    document.getElementById('results-inner').innerHTML = `
+      <div class="results-grid">
+        <div class="metric">
+          <div class="m-label">Roll A · ${unitLabel}</div>
+          <div class="m-value" style="color: ${winner==='a' ? 'var(--accent)' : 'var(--text)'}">${fmt(aUnit)}</div>
+          <div class="m-sub">${aDetail} · €${(v('a-price')/Math.max(1,v('a-rolls'))).toFixed(2)}/roll</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Roll B · ${unitLabel}</div>
+          <div class="m-value" style="color: ${winner==='b' ? 'var(--blue)' : 'var(--text)'}">${fmt(bUnit)}</div>
+          <div class="m-sub">${bDetail} · €${(v('b-price')/Math.max(1,v('b-rolls'))).toFixed(2)}/roll</div>
+        </div>
+      </div>
+      <div class="winner-bar ${winnerClass}">${winnerText}</div>
+    `;
+  }
+
+  calculate();
+</script>
+</body>
+</html>
