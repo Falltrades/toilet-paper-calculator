@@ -14,14 +14,6 @@
       --border: #d4d0c8;
       --text: #18181a;
       --muted: #76746e;
-      --a: #1a5c3a;
-      --a-light: #e6f2ec;
-      --b: #1a3a7a;
-      --b-light: #e6ecf8;
-      --c: #7a3a1a;
-      --c-light: #f8ece6;
-      --d: #5a1a7a;
-      --d-light: #f0e6f8;
       --win: #2d5a1a;
       --win-bg: #eaf2e6;
       --mono: 'DM Mono', monospace;
@@ -38,7 +30,6 @@
 
     .container { max-width: 800px; margin: 0 auto; }
 
-    /* ── HEADER ── */
     header {
       margin-bottom: 2rem;
       padding-bottom: 1.25rem;
@@ -52,13 +43,11 @@
     }
     header p { font-size: 0.875rem; color: var(--muted); margin-top: 0.35rem; }
 
-    /* ── NAV TABS ── */
     .nav-tabs {
       display: flex;
       gap: 6px;
       margin-bottom: 2rem;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 0;
     }
     .nav-tab {
       padding: 8px 20px;
@@ -86,7 +75,6 @@
     .page { display: none; }
     .page.visible { display: block; }
 
-    /* ── SHARED FIELD STYLES ── */
     .field { margin-bottom: 8px; }
     .field label {
       display: block;
@@ -110,7 +98,6 @@
     .field input:focus { border-color: var(--text); }
     .divider { height: 1px; background: var(--border); margin: 10px 0; }
 
-    /* ── RESULT / SUMMARY SHARED ── */
     .results-summary {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -132,9 +119,28 @@
       padding: 1.5rem;
     }
 
-    /* ══════════════════════════════
-       PAGE 1 — TOILET PAPER
-    ══════════════════════════════ */
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .top-controls label { font-size: 0.8rem; color: var(--muted); font-family: var(--mono); }
+
+    .add-btn {
+      padding: 7px 16px;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .add-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
+
     .method-tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
     .tab-btn {
       padding: 7px 16px;
@@ -150,99 +156,22 @@
     .tab-btn:hover { color: var(--text); border-color: var(--text); }
     .tab-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
 
-    .rolls-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 1.5rem;
-    }
-    .roll-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.25rem;
-    }
-    .roll-card h3 {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-    .dot-a { background: var(--a); }
-    .dot-b { background: var(--b); }
-
-    .tp-section { display: none; }
-    .tp-section.visible { display: block; }
-
-    .tp-results {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 1rem;
-    }
-    .tp-metric {
-      background: var(--bg);
-      border-radius: 6px;
-      padding: 0.875rem;
-    }
-    .tp-metric .m-label { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-bottom: 4px; }
-    .tp-metric .m-value { font-family: var(--mono); font-size: 1.3rem; font-weight: 500; }
-    .tp-metric .m-sub { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
-
-    .winner-bar {
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-      font-family: var(--mono);
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-align: center;
-    }
-    .winner-a { background: var(--a-light); color: var(--a); }
-    .winner-b { background: var(--b-light); color: var(--b); }
-    .winner-tie { background: #f5f0e8; color: var(--muted); }
-
-    /* ══════════════════════════════
-       PAGE 2 — PROTEIN
-    ══════════════════════════════ */
-    .pro-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .pro-controls label { font-size: 0.8rem; color: var(--muted); font-family: var(--mono); }
-    .add-btn {
-      padding: 7px 16px;
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .add-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); }
-
-    .powders-grid {
+    .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 12px;
       margin-bottom: 1.5rem;
     }
-    .powder-card {
+
+    .item-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 1rem;
       transition: border-color 0.2s;
     }
-    .powder-card.winner { border-color: var(--win); border-width: 2px; }
+    .item-card.winner { border-color: var(--win); border-width: 2px; }
+
     .card-header {
       display: flex;
       align-items: center;
@@ -257,19 +186,21 @@
       font-size: 0.82rem;
       font-weight: 500;
     }
+    .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
     .remove-btn {
       background: none; border: none; cursor: pointer;
       color: var(--muted); font-size: 1rem; line-height: 1;
       padding: 0 2px; transition: color 0.15s;
     }
     .remove-btn:hover { color: var(--text); }
+
     .card-result {
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid var(--border);
       font-family: var(--mono);
     }
-    .cpg { font-size: 1.25rem; font-weight: 500; }
+    .cpg { font-size: 1.2rem; font-weight: 500; }
     .cpg-label { font-size: 0.68rem; color: var(--muted); margin-top: 2px; }
     .extra { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
     .winner-badge {
@@ -279,9 +210,9 @@
       background: var(--win-bg);
       color: var(--win);
       border-radius: 3px;
-      font-family: var(--mono);
       margin-top: 5px;
     }
+
     .rank-list { list-style: none; }
     .rank-item {
       display: flex;
@@ -295,17 +226,13 @@
     .rank-item:last-child { border-bottom: none; }
     .rank-num { font-size: 0.72rem; color: var(--muted); min-width: 18px; }
     .rank-name { flex: 1; }
-    .rank-cpg { font-weight: 500; }
-    .rank-savings {
-      font-size: 0.72rem; padding: 2px 7px;
-      border-radius: 3px; background: var(--win-bg); color: var(--win);
-    }
-    .rank-more {
-      font-size: 0.72rem; padding: 2px 7px;
-      border-radius: 3px; background: #eeebe5; color: var(--muted);
-    }
+    .rank-val { font-weight: 500; }
+    .tag-best { font-size: 0.72rem; padding: 2px 7px; border-radius: 3px; background: var(--win-bg); color: var(--win); }
+    .tag-more { font-size: 0.72rem; padding: 2px 7px; border-radius: 3px; background: #eeebe5; color: var(--muted); }
 
-    /* ── FOOTER ── */
+    .tp-section { display: none; }
+    .tp-section.visible { display: block; }
+
     footer {
       margin-top: 2rem;
       padding-top: 1rem;
@@ -316,11 +243,10 @@
     }
 
     @media (max-width: 520px) {
-      .rolls-grid, .tp-results { grid-template-columns: 1fr; }
-      .powders-grid { grid-template-columns: 1fr 1fr; }
+      .cards-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 360px) {
-      .powders-grid { grid-template-columns: 1fr; }
+      .cards-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -337,99 +263,30 @@
     <button class="nav-tab" onclick="showPage('pro', this)">💪 protein powder</button>
   </nav>
 
-  <!-- ══════════════════════════
-       PAGE: TOILET PAPER
-  ══════════════════════════ -->
+  <!-- TOILET PAPER -->
   <div class="page visible" id="page-tp">
-
+    <div class="top-controls">
+      <button class="add-btn" id="tp-add-btn" onclick="tpAdd()">+ add roll</button>
+      <label id="tp-count-label"></label>
+    </div>
     <div class="method-tabs">
       <button class="tab-btn active" onclick="setTpMethod('weight', this)">By weight</button>
       <button class="tab-btn" onclick="setTpMethod('sheets', this)">By sheet count</button>
       <button class="tab-btn" onclick="setTpMethod('diameter', this)">By diameter</button>
     </div>
-
-    <div class="rolls-grid">
-      <!-- Roll A -->
-      <div class="roll-card">
-        <h3><span class="dot dot-a"></span> Roll A</h3>
-        <div class="field"><label>Price (€)</label>
-          <input type="number" id="a-price" value="1.50" min="0" step="0.01" oninput="tpCalc()"></div>
-        <div class="field"><label>Rolls in pack</label>
-          <input type="number" id="a-rolls" value="1" min="1" step="1" oninput="tpCalc()"></div>
-        <div class="divider"></div>
-
-        <div class="tp-section visible" id="tp-weight-a">
-          <div class="field"><label>Total roll weight (g)</label>
-            <input type="number" id="a-total-w" value="120" min="0" oninput="tpCalc()"></div>
-          <div class="field"><label>Tube weight (g)</label>
-            <input type="number" id="a-tube-w" value="15" min="0" oninput="tpCalc()"></div>
-        </div>
-        <div class="tp-section" id="tp-sheets-a">
-          <div class="field"><label>Sheet count</label>
-            <input type="number" id="a-sheets" value="200" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Sheet length (mm)</label>
-            <input type="number" id="a-sheet-len" value="113" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Sheet width (mm)</label>
-            <input type="number" id="a-sheet-wid" value="100" min="1" oninput="tpCalc()"></div>
-        </div>
-        <div class="tp-section" id="tp-diameter-a">
-          <div class="field"><label>Outer diameter (mm)</label>
-            <input type="number" id="a-outer" value="110" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Tube diameter (mm)</label>
-            <input type="number" id="a-inner" value="40" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Roll width (mm)</label>
-            <input type="number" id="a-width" value="100" min="1" oninput="tpCalc()"></div>
-        </div>
-      </div>
-
-      <!-- Roll B -->
-      <div class="roll-card">
-        <h3><span class="dot dot-b"></span> Roll B</h3>
-        <div class="field"><label>Price (€)</label>
-          <input type="number" id="b-price" value="2.20" min="0" step="0.01" oninput="tpCalc()"></div>
-        <div class="field"><label>Rolls in pack</label>
-          <input type="number" id="b-rolls" value="1" min="1" step="1" oninput="tpCalc()"></div>
-        <div class="divider"></div>
-
-        <div class="tp-section visible" id="tp-weight-b">
-          <div class="field"><label>Total roll weight (g)</label>
-            <input type="number" id="b-total-w" value="185" min="0" oninput="tpCalc()"></div>
-          <div class="field"><label>Tube weight (g)</label>
-            <input type="number" id="b-tube-w" value="15" min="0" oninput="tpCalc()"></div>
-        </div>
-        <div class="tp-section" id="tp-sheets-b">
-          <div class="field"><label>Sheet count</label>
-            <input type="number" id="b-sheets" value="280" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Sheet length (mm)</label>
-            <input type="number" id="b-sheet-len" value="100" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Sheet width (mm)</label>
-            <input type="number" id="b-sheet-wid" value="100" min="1" oninput="tpCalc()"></div>
-        </div>
-        <div class="tp-section" id="tp-diameter-b">
-          <div class="field"><label>Outer diameter (mm)</label>
-            <input type="number" id="b-outer" value="130" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Tube diameter (mm)</label>
-            <input type="number" id="b-inner" value="40" min="1" oninput="tpCalc()"></div>
-          <div class="field"><label>Roll width (mm)</label>
-            <input type="number" id="b-width" value="100" min="1" oninput="tpCalc()"></div>
-        </div>
-      </div>
-    </div>
-
+    <div class="cards-grid" id="tp-grid"></div>
     <div class="results-summary" id="tp-results">
-      <div class="empty">enter values above to compare</div>
+      <div class="empty">add at least two rolls to compare</div>
     </div>
   </div>
 
-  <!-- ══════════════════════════
-       PAGE: PROTEIN POWDER
-  ══════════════════════════ -->
+  <!-- PROTEIN POWDER -->
   <div class="page" id="page-pro">
-    <div class="pro-controls">
-      <button class="add-btn" id="pro-add-btn" onclick="proAddPowder()">+ add powder</button>
+    <div class="top-controls">
+      <button class="add-btn" id="pro-add-btn" onclick="proAdd()">+ add powder</button>
       <label id="pro-count-label"></label>
     </div>
-    <div class="powders-grid" id="pro-grid"></div>
+    <div class="cards-grid" id="pro-grid"></div>
     <div class="results-summary" id="pro-summary">
       <div class="empty">add at least two powders to compare</div>
     </div>
@@ -439,9 +296,7 @@
 </div>
 
 <script>
-/* ══════════════════════════════════
-   NAV
-══════════════════════════════════ */
+/* NAV */
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('visible'));
   document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
@@ -449,108 +304,238 @@ function showPage(id, btn) {
   btn.classList.add('active');
 }
 
-/* ══════════════════════════════════
+const COLORS = [
+  { dot: '#1a5c3a' },
+  { dot: '#1a3a7a' },
+  { dot: '#7a3a1a' },
+  { dot: '#5a1a7a' },
+];
+
+/* ══════════════════════
    TOILET PAPER
-══════════════════════════════════ */
+══════════════════════ */
 let tpMethod = 'weight';
+let tpRolls = [];
+let tpId = 0;
+
+const TP_DEFAULTS = [
+  { name: 'Roll A', price: '1.50', packs: '1', totalW: '120', tubeW: '15', sheets: '200', sheetLen: '113', sheetWid: '100', outer: '110', inner: '40', width: '100' },
+  { name: 'Roll B', price: '2.20', packs: '1', totalW: '185', tubeW: '15', sheets: '280', sheetLen: '100', sheetWid: '100', outer: '130', inner: '40', width: '100' },
+];
 
 function setTpMethod(m, btn) {
   tpMethod = m;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  ['weight','sheets','diameter'].forEach(sec => {
-    ['a','b'].forEach(roll => {
-      const el = document.getElementById('tp-' + sec + '-' + roll);
+  tpRolls.forEach(r => {
+    ['weight','sheets','diameter'].forEach(sec => {
+      const el = document.getElementById('tpsec-' + sec + '-' + r.id);
       if (el) el.classList.toggle('visible', sec === m);
     });
   });
   tpCalc();
 }
 
-function tv(id) { return parseFloat(document.getElementById(id).value) || 0; }
-function tfmt(n) { return n < 0.01 ? n.toFixed(5) : n < 0.1 ? n.toFixed(4) : n.toFixed(3); }
+function tpAdd() {
+  if (tpRolls.length >= 4) return;
+  const id = tpId++;
+  const idx = tpRolls.length;
+  const def = TP_DEFAULTS[idx] || {
+    name: 'Roll ' + String.fromCharCode(65 + idx),
+    price: '', packs: '1', totalW: '', tubeW: '',
+    sheets: '', sheetLen: '', sheetWid: '',
+    outer: '', inner: '', width: ''
+  };
+  tpRolls.push({ id, idx, ...def });
+  tpRender();
+}
+
+function tpRemove(id) {
+  tpRolls = tpRolls.filter(r => r.id !== id);
+  tpRolls.forEach((r, i) => r.idx = i);
+  tpRender();
+}
+
+function tpUpdate(id, field, value) {
+  const r = tpRolls.find(r => r.id === id);
+  if (r) { r[field] = value; tpCalc(); }
+}
+
+function tpfmt(n) { return n < 0.01 ? n.toFixed(5) : n < 0.1 ? n.toFixed(4) : n.toFixed(3); }
+function rf(r, f) { return parseFloat(r[f]) || 0; }
 
 function tpCalc() {
-  const aPrice = tv('a-price') / Math.max(1, tv('a-rolls'));
-  const bPrice = tv('b-price') / Math.max(1, tv('b-rolls'));
-  let aUnit, bUnit, unitLabel, aDetail, bDetail;
+  tpRolls.forEach(r => {
+    const price = rf(r, 'price') / Math.max(1, rf(r, 'packs'));
+    if (tpMethod === 'weight') {
+      const g = rf(r, 'totalW') - rf(r, 'tubeW');
+      r.unit = g > 0 ? price / g : null;
+      r.detail = g > 0 ? g.toFixed(0) + 'g paper' : null;
+      r.unitLabel = '€/g paper';
+    } else if (tpMethod === 'sheets') {
+      const area = rf(r, 'sheets') * rf(r, 'sheetLen') * rf(r, 'sheetWid') / 10000;
+      r.unit = area > 0 ? (price / area) * 100 : null;
+      r.detail = area > 0 ? area.toFixed(0) + ' cm²' : null;
+      r.unitLabel = '€/100cm²';
+    } else {
+      const vol = Math.PI * ((rf(r, 'outer') / 2) ** 2 - (rf(r, 'inner') / 2) ** 2) * rf(r, 'width') / 1000;
+      r.unit = vol > 0 ? price / vol : null;
+      r.detail = vol > 0 ? vol.toFixed(0) + ' cm³' : null;
+      r.unitLabel = '€/cm³';
+    }
+    r.pricePerRoll = price;
+    r.valid = r.unit !== null && !isNaN(r.unit);
+  });
+  tpUpdateResults();
+}
 
-  if (tpMethod === 'weight') {
-    const aG = tv('a-total-w') - tv('a-tube-w');
-    const bG = tv('b-total-w') - tv('b-tube-w');
-    aUnit = aG > 0 ? aPrice / aG : null;
-    bUnit = bG > 0 ? bPrice / bG : null;
-    unitLabel = '€ / gram of paper';
-    aDetail = aG > 0 ? aG.toFixed(0) + 'g paper' : '—';
-    bDetail = bG > 0 ? bG.toFixed(0) + 'g paper' : '—';
-  } else if (tpMethod === 'sheets') {
-    const aA = tv('a-sheets') * tv('a-sheet-len') * tv('a-sheet-wid') / 10000;
-    const bA = tv('b-sheets') * tv('b-sheet-len') * tv('b-sheet-wid') / 10000;
-    aUnit = aA > 0 ? (aPrice / aA) * 100 : null;
-    bUnit = bA > 0 ? (bPrice / bA) * 100 : null;
-    unitLabel = '€ / 100 cm²';
-    aDetail = aA > 0 ? aA.toFixed(0) + ' cm²' : '—';
-    bDetail = bA > 0 ? bA.toFixed(0) + ' cm²' : '—';
-  } else {
-    const aV = Math.PI * ((tv('a-outer')/2)**2 - (tv('a-inner')/2)**2) * tv('a-width') / 1000;
-    const bV = Math.PI * ((tv('b-outer')/2)**2 - (tv('b-inner')/2)**2) * tv('b-width') / 1000;
-    aUnit = aV > 0 ? aPrice / aV : null;
-    bUnit = bV > 0 ? bPrice / bV : null;
-    unitLabel = '€ / cm³ of paper';
-    aDetail = aV > 0 ? aV.toFixed(0) + ' cm³' : '—';
-    bDetail = bV > 0 ? bV.toFixed(0) + ' cm³' : '—';
-  }
+function tpUpdateResults() {
+  const valid = tpRolls.filter(r => r.valid).sort((a, b) => a.unit - b.unit);
+  const best = valid[0];
+
+  tpRolls.forEach(r => {
+    const card = document.getElementById('tpcard-' + r.id);
+    if (!card) return;
+    card.classList.toggle('winner', r.valid && best && r.id === best.id && valid.length > 1);
+    const res = document.getElementById('tpres-' + r.id);
+    if (!res) return;
+    if (r.valid) {
+      const isBest = best && r.id === best.id && valid.length > 1;
+      res.innerHTML = `
+        <div class="cpg" style="color:${isBest ? 'var(--win)' : 'var(--text)'}">${tpfmt(r.unit)}</div>
+        <div class="cpg-label">${r.unitLabel}</div>
+        <div class="extra">${r.detail} · €${r.pricePerRoll.toFixed(2)}/roll</div>
+        ${isBest ? '<div class="winner-badge">best value</div>' : ''}
+      `;
+    } else {
+      res.innerHTML = '<div class="cpg-label" style="margin-top:4px">fill in all fields</div>';
+    }
+  });
 
   const el = document.getElementById('tp-results');
-  if (!aUnit || !bUnit || isNaN(aUnit) || isNaN(bUnit)) {
-    el.innerHTML = '<div class="empty">enter valid values above to compare</div>';
+  if (valid.length < 2) {
+    el.innerHTML = '<div class="empty">add at least two valid rolls to compare</div>';
     return;
   }
 
-  const winner = aUnit < bUnit ? 'a' : bUnit < aUnit ? 'b' : 'tie';
-  const savings = (Math.abs(aUnit - bUnit) / Math.max(aUnit, bUnit) * 100).toFixed(1);
-  const winnerText = winner === 'a' ? `Roll A is cheaper by ${savings}%`
-    : winner === 'b' ? `Roll B is cheaper by ${savings}%`
-    : 'Equal value — no difference';
-  const winnerClass = winner === 'a' ? 'winner-a' : winner === 'b' ? 'winner-b' : 'winner-tie';
+  const bestVal = valid[0].unit;
+  const worstVal = valid[valid.length - 1].unit;
+  const totalSavings = ((worstVal - bestVal) / worstVal * 100).toFixed(1);
+  const methodLabel = tpMethod === 'weight' ? 'cost per gram of paper' : tpMethod === 'sheets' ? 'cost per 100cm²' : 'cost per cm³';
+
+  const rows = valid.map((r, i) => {
+    const more = i === 0 ? null : ((r.unit - bestVal) / bestVal * 100).toFixed(1);
+    return `<li class="rank-item">
+      <span class="rank-num">${i + 1}.</span>
+      <span style="width:9px;height:9px;border-radius:50%;background:${COLORS[r.idx].dot};flex-shrink:0;display:inline-block;"></span>
+      <span class="rank-name">${r.name || 'Roll ' + (r.idx + 1)}</span>
+      <span class="rank-val">${tpfmt(r.unit)} ${r.unitLabel}</span>
+      ${i === 0 ? '<span class="tag-best">best value</span>' : `<span class="tag-more">+${more}% more</span>`}
+    </li>`;
+  }).join('');
 
   el.innerHTML = `
-    <div class="tp-results">
-      <div class="tp-metric">
-        <div class="m-label">Roll A · ${unitLabel}</div>
-        <div class="m-value" style="color:${winner==='a'?'var(--a)':'var(--text)'}">${tfmt(aUnit)}</div>
-        <div class="m-sub">${aDetail} · €${(tv('a-price')/Math.max(1,tv('a-rolls'))).toFixed(2)}/roll</div>
-      </div>
-      <div class="tp-metric">
-        <div class="m-label">Roll B · ${unitLabel}</div>
-        <div class="m-value" style="color:${winner==='b'?'var(--b)':'var(--text)'}">${tfmt(bUnit)}</div>
-        <div class="m-sub">${bDetail} · €${(tv('b-price')/Math.max(1,tv('b-rolls'))).toFixed(2)}/roll</div>
-      </div>
+    <div class="summary-title">ranking — ${methodLabel}</div>
+    <ul class="rank-list">${rows}</ul>
+    <div style="margin-top:12px;font-size:0.78rem;color:var(--muted);font-family:var(--mono);">
+      choosing <strong style="color:var(--text)">${valid[0].name || 'the best option'}</strong> over the most expensive saves you <strong style="color:var(--win)">${totalSavings}%</strong>.
     </div>
-    <div class="winner-bar ${winnerClass}">${winnerText}</div>
   `;
 }
 
-tpCalc();
+function tpRender() {
+  const grid = document.getElementById('tp-grid');
+  grid.innerHTML = '';
+  const btn = document.getElementById('tp-add-btn');
+  btn.style.opacity = tpRolls.length >= 4 ? '0.4' : '1';
+  btn.style.pointerEvents = tpRolls.length >= 4 ? 'none' : 'auto';
+  document.getElementById('tp-count-label').textContent = tpRolls.length > 0 ? tpRolls.length + ' / 4 rolls' : '';
 
-/* ══════════════════════════════════
+  tpRolls.forEach(r => {
+    const col = COLORS[r.idx];
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.id = 'tpcard-' + r.id;
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-title">
+          <span class="dot" style="background:${col.dot}"></span>
+          <input type="text" value="${r.name}" placeholder="Name"
+            style="border:none;background:transparent;font-family:var(--mono);font-size:0.82rem;font-weight:500;color:var(--text);width:100px;outline:none;padding:0;"
+            oninput="tpUpdate(${r.id},'name',this.value)">
+        </div>
+        ${tpRolls.length > 1 ? `<button class="remove-btn" onclick="tpRemove(${r.id})">×</button>` : ''}
+      </div>
+      <div class="field"><label>Price (€)</label>
+        <input type="number" value="${r.price}" min="0" step="0.01" placeholder="e.g. 1.99"
+          oninput="tpUpdate(${r.id},'price',this.value)"></div>
+      <div class="field"><label>Rolls in pack</label>
+        <input type="number" value="${r.packs}" min="1" step="1" placeholder="e.g. 4"
+          oninput="tpUpdate(${r.id},'packs',this.value)"></div>
+      <div class="divider"></div>
+
+      <div class="tp-section ${tpMethod === 'weight' ? 'visible' : ''}" id="tpsec-weight-${r.id}">
+        <div class="field"><label>Total roll weight (g)</label>
+          <input type="number" value="${r.totalW}" min="0" placeholder="e.g. 120"
+            oninput="tpUpdate(${r.id},'totalW',this.value)"></div>
+        <div class="field"><label>Tube weight (g)</label>
+          <input type="number" value="${r.tubeW}" min="0" placeholder="e.g. 15"
+            oninput="tpUpdate(${r.id},'tubeW',this.value)"></div>
+      </div>
+
+      <div class="tp-section ${tpMethod === 'sheets' ? 'visible' : ''}" id="tpsec-sheets-${r.id}">
+        <div class="field"><label>Sheet count</label>
+          <input type="number" value="${r.sheets}" min="1" placeholder="e.g. 200"
+            oninput="tpUpdate(${r.id},'sheets',this.value)"></div>
+        <div class="field"><label>Sheet length (mm)</label>
+          <input type="number" value="${r.sheetLen}" min="1" placeholder="e.g. 113"
+            oninput="tpUpdate(${r.id},'sheetLen',this.value)"></div>
+        <div class="field"><label>Sheet width (mm)</label>
+          <input type="number" value="${r.sheetWid}" min="1" placeholder="e.g. 100"
+            oninput="tpUpdate(${r.id},'sheetWid',this.value)"></div>
+      </div>
+
+      <div class="tp-section ${tpMethod === 'diameter' ? 'visible' : ''}" id="tpsec-diameter-${r.id}">
+        <div class="field"><label>Outer diameter (mm)</label>
+          <input type="number" value="${r.outer}" min="1" placeholder="e.g. 110"
+            oninput="tpUpdate(${r.id},'outer',this.value)"></div>
+        <div class="field"><label>Tube diameter (mm)</label>
+          <input type="number" value="${r.inner}" min="1" placeholder="e.g. 40"
+            oninput="tpUpdate(${r.id},'inner',this.value)"></div>
+        <div class="field"><label>Roll width (mm)</label>
+          <input type="number" value="${r.width}" min="1" placeholder="e.g. 100"
+            oninput="tpUpdate(${r.id},'width',this.value)"></div>
+      </div>
+
+      <div class="card-result" id="tpres-${r.id}">
+        <div class="cpg-label" style="margin-top:4px">fill in all fields</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  tpCalc();
+}
+
+/* ══════════════════════
    PROTEIN POWDER
-══════════════════════════════════ */
-const PRO_COLORS = [
-  { dot: '#1a5c3a' }, { dot: '#1a3a7a' }, { dot: '#7a3a1a' }, { dot: '#5a1a7a' }
-];
+══════════════════════ */
+let proPowders = [];
+let proId = 0;
+
 const PRO_DEFAULTS = [
   { name: 'Brand A', price: '29.99', weight: '1000', servings: '33', protein: '25' },
   { name: 'Brand B', price: '44.99', weight: '2000', servings: '67', protein: '24' },
 ];
-let proPowders = [];
-let proIdCounter = 0;
 
-function proAddPowder() {
+function proAdd() {
   if (proPowders.length >= 4) return;
-  const id = proIdCounter++;
+  const id = proId++;
   const idx = proPowders.length;
-  const def = PRO_DEFAULTS[idx] || { name: 'Brand ' + (idx+1), price: '', weight: '', servings: '', protein: '' };
+  const def = PRO_DEFAULTS[idx] || {
+    name: 'Brand ' + String.fromCharCode(65 + idx),
+    price: '', weight: '', servings: '', protein: ''
+  };
   proPowders.push({ id, idx, ...def });
   proRender();
 }
@@ -583,7 +568,7 @@ function proCalc() {
 }
 
 function proUpdateResults() {
-  const valid = proPowders.filter(p => p.valid).sort((a,b) => a.cpg - b.cpg);
+  const valid = proPowders.filter(p => p.valid).sort((a, b) => a.cpg - b.cpg);
   const best = valid[0];
 
   proPowders.forEach(p => {
@@ -595,9 +580,9 @@ function proUpdateResults() {
     if (p.valid) {
       const isBest = best && p.id === best.id && valid.length > 1;
       res.innerHTML = `
-        <div class="cpg" style="color:${isBest?'var(--win)':'var(--text)'}">€${p.cpg.toFixed(4)}</div>
+        <div class="cpg" style="color:${isBest ? 'var(--win)' : 'var(--text)'}">€${p.cpg.toFixed(4)}</div>
         <div class="cpg-label">per gram of protein</div>
-        <div class="extra">${p.totalProtein.toFixed(0)}g protein total · €${(parseFloat(p.price)/parseFloat(p.servings)).toFixed(2)}/serving</div>
+        <div class="extra">${p.totalProtein.toFixed(0)}g total · €${(parseFloat(p.price) / parseFloat(p.servings)).toFixed(2)}/serving</div>
         ${isBest ? '<div class="winner-badge">best value</div>' : ''}
       `;
     } else {
@@ -612,17 +597,17 @@ function proUpdateResults() {
   }
 
   const bestCpg = valid[0].cpg;
-  const worstCpg = valid[valid.length-1].cpg;
+  const worstCpg = valid[valid.length - 1].cpg;
   const totalSavings = ((worstCpg - bestCpg) / worstCpg * 100).toFixed(1);
 
   const rows = valid.map((p, i) => {
-    const savings = i === 0 ? null : ((p.cpg - bestCpg) / bestCpg * 100).toFixed(1);
+    const more = i === 0 ? null : ((p.cpg - bestCpg) / bestCpg * 100).toFixed(1);
     return `<li class="rank-item">
-      <span class="rank-num">${i+1}.</span>
-      <span style="width:9px;height:9px;border-radius:50%;background:${PRO_COLORS[p.idx].dot};flex-shrink:0;display:inline-block;"></span>
-      <span class="rank-name">${p.name || 'Powder ' + (p.idx+1)}</span>
-      <span class="rank-cpg">€${p.cpg.toFixed(4)}/g</span>
-      ${i === 0 ? '<span class="rank-savings">best value</span>' : `<span class="rank-more">+${savings}% more</span>`}
+      <span class="rank-num">${i + 1}.</span>
+      <span style="width:9px;height:9px;border-radius:50%;background:${COLORS[p.idx].dot};flex-shrink:0;display:inline-block;"></span>
+      <span class="rank-name">${p.name || 'Powder ' + (p.idx + 1)}</span>
+      <span class="rank-val">€${p.cpg.toFixed(4)}/g</span>
+      ${i === 0 ? '<span class="tag-best">best value</span>' : `<span class="tag-more">+${more}% more</span>`}
     </li>`;
   }).join('');
 
@@ -630,7 +615,7 @@ function proUpdateResults() {
     <div class="summary-title">ranking — cost per gram of protein</div>
     <ul class="rank-list">${rows}</ul>
     <div style="margin-top:12px;font-size:0.78rem;color:var(--muted);font-family:var(--mono);">
-      choosing <strong style="color:var(--text)">${valid[0].name||'the best option'}</strong> over the most expensive saves you <strong style="color:var(--win)">${totalSavings}%</strong> per gram of protein.
+      choosing <strong style="color:var(--text)">${valid[0].name || 'the best option'}</strong> over the most expensive saves you <strong style="color:var(--win)">${totalSavings}%</strong> per gram of protein.
     </div>
   `;
 }
@@ -645,9 +630,9 @@ function proRender() {
     proPowders.length > 0 ? proPowders.length + ' / 4 powders' : '';
 
   proPowders.forEach(p => {
-    const col = PRO_COLORS[p.idx];
+    const col = COLORS[p.idx];
     const card = document.createElement('div');
-    card.className = 'powder-card';
+    card.className = 'item-card';
     card.id = 'procard-' + p.id;
     card.innerHTML = `
       <div class="card-header">
@@ -681,8 +666,9 @@ function proRender() {
   proCalc();
 }
 
-proAddPowder();
-proAddPowder();
+/* INIT */
+tpAdd(); tpAdd();
+proAdd(); proAdd();
 </script>
 </body>
 </html>
