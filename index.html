@@ -294,7 +294,31 @@
       <button class="tab-btn active" onclick="setTpMethod('weight', this)">By weight</button>
       <button class="tab-btn" onclick="setTpMethod('sheets', this)">By sheet count</button>
       <button class="tab-btn" onclick="setTpMethod('diameter', this)">By diameter</button>
+      <button class="tab-btn" onclick="setTpMethod('hand', this)">&#128075; By hand</button>
     </div>
+
+    <!-- HAND CALIBRATION PANEL -->
+    <div id="hand-calibration" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;">
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem;">your hand measurements <span style="font-size:0.68rem;">(set once, used for all rolls)</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="field">
+          <label>finger width (mm)</label>
+          <input type="number" id="hand-finger" value="18" min="10" max="30" step="1" oninput="tpCalc()">
+        </div>
+        <div class="field">
+          <label>palm width (mm)</label>
+          <input type="number" id="hand-palm" value="85" min="50" max="130" step="1" oninput="tpCalc()">
+        </div>
+        <div class="field">
+          <label>thumb length (mm)</label>
+          <input type="number" id="hand-thumb" value="60" min="40" max="90" step="1" oninput="tpCalc()">
+        </div>
+      </div>
+      <div style="font-size:0.7rem;color:var(--muted);font-family:var(--mono);margin-top:6px;">
+        Tip: measure your finger width and palm width with a ruler once. Defaults are average adult values.
+      </div>
+    </div>
+
     <div class="cards-grid" id="tp-grid"></div>
     <div class="results-summary" id="tp-results">
       <div class="empty">add at least two rolls to compare</div>
@@ -352,16 +376,18 @@ let tpRolls = [];
 let tpId = 0;
 
 const TP_DEFAULTS = [
-  { name: 'Roll A', price: '1.50', packs: '1', totalW: '120', tubeW: '15', sheets: '200', sheetLen: '113', sheetWid: '100', outer: '110', inner: '40', width: '100' },
-  { name: 'Roll B', price: '2.20', packs: '1', totalW: '185', tubeW: '15', sheets: '280', sheetLen: '100', sheetWid: '100', outer: '130', inner: '40', width: '100' },
+  { name: 'Roll A', price: '1.50', packs: '1', totalW: '120', tubeW: '15', sheets: '200', sheetLen: '113', sheetWid: '100', outer: '110', inner: '40', width: '100', hOuter: '6', hTube: '1', hWidth: '1' },
+  { name: 'Roll B', price: '2.20', packs: '1', totalW: '185', tubeW: '15', sheets: '280', sheetLen: '100', sheetWid: '100', outer: '130', inner: '40', width: '100', hOuter: '7', hTube: '1', hWidth: '1' },
 ];
 
 function setTpMethod(m, btn) {
   tpMethod = m;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const cal = document.getElementById('hand-calibration');
+  if (cal) cal.style.display = m === 'hand' ? 'block' : 'none';
   tpRolls.forEach(r => {
-    ['weight','sheets','diameter'].forEach(sec => {
+    ['weight','sheets','diameter','hand'].forEach(sec => {
       const el = document.getElementById('tpsec-' + sec + '-' + r.id);
       if (el) el.classList.toggle('visible', sec === m);
     });
@@ -377,7 +403,8 @@ function tpAdd() {
     name: 'Roll ' + String.fromCharCode(65 + idx),
     price: '', packs: '1', totalW: '', tubeW: '',
     sheets: '', sheetLen: '', sheetWid: '',
-    outer: '', inner: '', width: ''
+    outer: '', inner: '', width: '',
+    hOuter: '', hTube: '', hWidth: ''
   };
   tpRolls.push({ id, idx, ...def });
   tpRender();
@@ -410,11 +437,27 @@ function tpCalc() {
       r.unit = area > 0 ? (price / area) * 100 : null;
       r.detail = area > 0 ? area.toFixed(0) + ' cm²' : null;
       r.unitLabel = '€/100cm²';
-    } else {
+    } else if (tpMethod === 'diameter') {
       const vol = Math.PI * ((rf(r, 'outer') / 2) ** 2 - (rf(r, 'inner') / 2) ** 2) * rf(r, 'width') / 1000;
       r.unit = vol > 0 ? price / vol : null;
       r.detail = vol > 0 ? vol.toFixed(0) + ' cm³' : null;
       r.unitLabel = '€/cm³';
+    } else {
+      // hand estimation method
+      const fingerW = parseFloat(document.getElementById('hand-finger')?.value) || 18;
+      const palmW   = parseFloat(document.getElementById('hand-palm')?.value)   || 85;
+      const thumbL  = parseFloat(document.getElementById('hand-thumb')?.value)  || 60;
+      // outer diameter: user says how many finger-widths across the roll is
+      const outerEst = rf(r, 'hOuter') * fingerW;
+      // tube: fixed ~40mm (1 standard finger fits)
+      const tubeEst  = rf(r, 'hTube') === 2 ? fingerW * 2 : 40;
+      // width: user picks palm, thumb, or finger count
+      const widthCode = rf(r, 'hWidth');
+      const widthEst  = widthCode === 1 ? palmW : widthCode === 2 ? thumbL : widthCode * fingerW;
+      const vol = Math.PI * ((outerEst / 2) ** 2 - (tubeEst / 2) ** 2) * widthEst / 1000;
+      r.unit = vol > 0 ? price / vol : null;
+      r.detail = vol > 0 ? '~' + vol.toFixed(0) + ' cm³ est.' : null;
+      r.unitLabel = '€/cm³ est.';
     }
     r.pricePerRoll = price;
     r.valid = r.unit !== null && !isNaN(r.unit);
@@ -454,7 +497,7 @@ function tpUpdateResults() {
   const bestVal = valid[0].unit;
   const worstVal = valid[valid.length - 1].unit;
   const totalSavings = ((worstVal - bestVal) / worstVal * 100).toFixed(1);
-  const methodLabel = tpMethod === 'weight' ? 'cost per gram of paper' : tpMethod === 'sheets' ? 'cost per 100cm²' : 'cost per cm³';
+  const methodLabel = tpMethod === 'weight' ? 'cost per gram of paper' : tpMethod === 'sheets' ? 'cost per 100cm²' : tpMethod === 'diameter' ? 'cost per cm³' : 'estimated cost per cm³ (hand method)';
 
   const rows = valid.map((r, i) => {
     const more = i === 0 ? null : ((r.unit - bestVal) / bestVal * 100).toFixed(1);
@@ -538,6 +581,35 @@ function tpRender() {
         <div class="field"><label>Roll width (mm)</label>
           <input type="number" value="${r.width}" min="1" placeholder="e.g. 100"
             oninput="tpUpdate(${r.id},'width',this.value)"></div>
+      </div>
+
+      <div class="tp-section ${tpMethod === 'hand' ? 'visible' : ''}" id="tpsec-hand-${r.id}">
+        <div class="field">
+          <label>roll diameter — finger-widths across</label>
+          <input type="number" value="${r.hOuter||''}" min="1" max="15" step="0.5" placeholder="e.g. 6"
+            oninput="tpUpdate(${r.id},'hOuter',this.value)">
+        </div>
+        <div class="field">
+          <label>tube size</label>
+          <select oninput="tpUpdate(${r.id},'hTube',this.value)"
+            style="width:100%;padding:7px 10px;font-family:var(--mono);font-size:0.83rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);outline:none;">
+            <option value="1" ${rf(r,'hTube')===1||!r.hTube?'selected':''}>fits 1 finger (~40mm, standard)</option>
+            <option value="2" ${rf(r,'hTube')===2?'selected':''}>fits 2 fingers (~36mm, compact)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>roll width</label>
+          <select oninput="tpUpdate(${r.id},'hWidth',this.value)"
+            style="width:100%;padding:7px 10px;font-family:var(--mono);font-size:0.83rem;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);outline:none;">
+            <option value="1" ${rf(r,'hWidth')===1||!r.hWidth?'selected':''}>about 1 palm wide (~85mm)</option>
+            <option value="2" ${rf(r,'hWidth')===2?'selected':''}>about 1 thumb length (~60mm)</option>
+            <option value="5" ${rf(r,'hWidth')===5?'selected':''}>about 5 finger-widths</option>
+            <option value="6" ${rf(r,'hWidth')===6?'selected':''}>about 6 finger-widths</option>
+          </select>
+        </div>
+        <div style="font-size:0.68rem;color:var(--muted);font-family:var(--mono);margin-top:4px;line-height:1.4;">
+          estimate how many fingers wide the roll is when looking at it straight on
+        </div>
       </div>
 
       <div class="card-result" id="tpres-${r.id}">
