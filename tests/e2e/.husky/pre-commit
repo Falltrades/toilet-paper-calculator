@@ -1,0 +1,126 @@
+#!/usr/bin/env sh
+# ──────────────────────────────────────────────────────────────────────────────
+# Pre-commit hook — runs in < 3 seconds.
+# Philosophy: catch embarrassing/irreversible mistakes only.
+#             Full tests (Kotlin + Playwright) run in GitHub Actions CI.
+# ──────────────────────────────────────────────────────────────────────────────
+
+set -e
+
+BOLD='\033[1m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+RESET='\033[0m'
+
+ok()   { printf "  ${GREEN}✓${RESET} %s\n" "$1"; }
+fail() { printf "  ${RED}✗${RESET} ${BOLD}%s${RESET}\n" "$1" >&2; }
+warn() { printf "  ${YELLOW}!${RESET} %s\n" "$1"; }
+
+ERRORS=0
+error() { fail "$1"; ERRORS=$((ERRORS + 1)); }
+
+# Staged files only (excluding deletions)
+STAGED=$(git diff --cached --name-only --diff-filter=d)
+
+printf "\n${BOLD}pre-commit${RESET}\n\n"
+
+# ── 1. No secrets ──────────────────────────────────────────────────────────────
+# Patterns that should never appear in committed code.
+SECRET_PATTERNS='(password|passwd|secret|api_key|apikey|token|private_key)\s*[=:]\s*["\x27][^"\x27]{6,}'
+BAD_FILES=""
+for f in $STAGED; do
+  case "$f" in
+    *.kt|*.java|*.js|*.ts|*.html|*.yml|*.yaml|*.json|*.gradle|*.properties)
+      if git show ":$f" | grep -qiE "$SECRET_PATTERNS" 2>/dev/null; then
+        BAD_FILES="$BAD_FILES $f"
+      fi
+      ;;
+  esac
+done
+if [ -n "$BAD_FILES" ]; then
+  error "Possible secrets detected in:$BAD_FILES"
+  printf "     Run: git diff --cached | grep -iE '%s'\n" "$SECRET_PATTERNS" >&2
+else
+  ok "No secrets pattern detected"
+fi
+
+# ── 2. No signing keys committed ───────────────────────────────────────────────
+KEY_FILES=$(echo "$STAGED" | grep -E '\.(jks|keystore|p12|pfx|pem|key)$' || true)
+if [ -n "$KEY_FILES" ]; then
+  error "Signing/key files must NOT be committed: $KEY_FILES"
+else
+  ok "No signing keys staged"
+fi
+
+# ── 3. gradle-wrapper.jar must not be deleted ──────────────────────────────────
+# It took several CI failures to get this file committed — don't let it disappear.
+DELETED=$(git diff --cached --name-only --diff-filter=D)
+if echo "$DELETED" | grep -q "gradle/wrapper/gradle-wrapper.jar"; then
+  error "gradle/wrapper/gradle-wrapper.jar must stay committed (needed by CI)"
+else
+  ok "gradle-wrapper.jar not deleted"
+fi
+
+# ── 4. No debug console.log in index.html ─────────────────────────────────────
+if echo "$STAGED" | grep -q "index.html"; then
+  if git show ":index.html" | grep -q "console\.log"; then
+    error "console.log found in index.html — remove before committing"
+  else
+    ok "No console.log in index.html"
+  fi
+fi
+
+# ── 5. No files larger than 1 MB ──────────────────────────────────────────────
+# Catches accidentally staged APKs, ZIPs, or build outputs.
+BIG_FILES=""
+for f in $STAGED; do
+  # Get the size from the index (works even for new files)
+  SIZE=$(git cat-file -s ":$f" 2>/dev/null || echo 0)
+  if [ "$SIZE" -gt 1048576 ]; then
+    BIG_FILES="$BIG_FILES\n    $f ($(( SIZE / 1024 ))KB)"
+  fi
+done
+if [ -n "$BIG_FILES" ]; then
+  error "Files > 1MB staged — probably build artefacts?:$BIG_FILES"
+else
+  ok "No oversized files (all staged files ≤ 1MB)"
+fi
+
+# ── 6. YAML/JSON syntax check for workflow files ───────────────────────────────
+# A broken .yml crashes the whole pipeline before any tests run.
+YAML_ERRORS=""
+for f in $STAGED; do
+  case "$f" in
+    *.yml|*.yaml)
+      if command -v python3 >/dev/null 2>&1; then
+        if ! git show ":$f" | python3 -c "import sys,yaml; yaml.safe_load(sys.stdin)" 2>/dev/null; then
+          YAML_ERRORS="$YAML_ERRORS $f"
+        fi
+      fi
+      ;;
+    *.json)
+      if command -v python3 >/dev/null 2>&1; then
+        if ! git show ":$f" | python3 -m json.tool >/dev/null 2>&1; then
+          YAML_ERRORS="$YAML_ERRORS $f"
+        fi
+      fi
+      ;;
+  esac
+done
+if [ -n "$YAML_ERRORS" ]; then
+  error "Invalid YAML/JSON syntax:$YAML_ERRORS"
+else
+  ok "YAML/JSON syntax valid"
+fi
+
+# ── Result ────────────────────────────────────────────────────────────────────
+printf "\n"
+if [ "$ERRORS" -gt 0 ]; then
+  printf "${RED}${BOLD}Commit blocked — $ERRORS error(s) above.${RESET}\n"
+  printf "Fix the issues or run ${BOLD}git commit --no-verify${RESET} to skip (not recommended).\n\n"
+  exit 1
+else
+  printf "${GREEN}${BOLD}All checks passed — committing.${RESET}\n\n"
+  exit 0
+fi

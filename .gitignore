@@ -21,7 +21,10 @@ key.properties
 /package-lock.json
 /package.json
 
-# ── Tests ─────────────────────────────────
+# Dev tooling node_modules (husky lives in tests/)
+tests/node_modules/
+
+# Tests
 playwright-report/
 test-results/
 *.zip
